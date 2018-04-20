@@ -1,10 +1,34 @@
+setwd("D:\\GitHub\\my_project\\Employment_predict")
 source("function.R")
+library(magrittr)
+library(dplyr)
 df <- read.csv("jdetl.csv") %>% 
   def_rename(1) %>% 
   filter(y==1 | y==2 | y==3) %>% 
   select(-c(27:28,48:51)) 
 
-
+df1 <- select(df,y,
+             x5,
+             x7,
+             x9,
+             x10,
+             x11,
+             x13,
+             x22,
+             x23,
+             x24,
+             x25,
+             x28,
+             x29,
+             x31,
+             x35,
+             x36,
+             x42,
+             x44,
+             x53,
+             x55,
+             x54,
+             x56)
 
 library(lars) #lars函数值用于矩阵型数据
 laa <- lars(df[,2:ncol(df)] %>% as.matrix(),df[,1] %>% as.matrix(),
@@ -21,15 +45,33 @@ train$y <-  train$y %>% as.factor()
 test$y <-  test$y %>% as.factor()
 
 
-formula <-  paste0(nn1,collapse = "+") %>% 
+formula1 <-  paste0(nn1,collapse = "+") %>% 
   paste0("y ~ ",.) %>% 
   as.formula()
 
-## Random Forest1
+formula <- formula(y ~ x5+x7+x9+x10+x11+x13+x22+x23+x24+x25+
+                      x28+x29+x31+x35+x36+x42+x44+x53+x54+x56)
+  
 
-ress <- filter_factor(train[,2:ncol(train)],train[,1])
-res0  <- predict(ress,test[,2:ncol(test)],type ="class")
-ver_ratio(res0$pred,test[,1]) 
+
+library(class)
+library(gmodels)
+library(magrittr)
+
+pre_result <- knn(train=train[,2:ncol(train)],test=test[,2:ncol(test)],
+                  cl=train[,1],k=ceiling(sqrt(nrow(df))))
+# k的取值最好是数据集的条数开方，并且最好取奇数
+# table(pre_result,test_lab)
+ver_ratio(pre_result,test[,1])
+# k = sqrt(150) %>% ceiling()
+
+
+
+
+## Random Forest1
+# ress <- filter_factor(train[,2:ncol(train)],train[,1])
+# res0  <- predict(ress,test[,2:ncol(test)],type ="class")
+# ver_ratio(res0$pred,test[,1]) 
 
 ## Random Forest
 library(randomForest)
