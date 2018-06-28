@@ -43,7 +43,7 @@ con <- dbConnect(MySQL(),
                  client.flag= CLIENT_MULTI_STATEMENTS)
 dbGetQuery(con,"truncate table names_dic")
 dbWriteTable(con,"names_dic",res,row.names=F,append = TRUE) 
-#覆盖：overwrite = TRUE   追加append = TRUE
+#覆盖：overwrite = TRUE （注意主键丢失，原 id 删除，更换成 row.names）  追加append = TRUE
 dbDisconnect(con)
 rm(list = ls())
 gc()
