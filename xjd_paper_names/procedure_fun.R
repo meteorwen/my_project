@@ -70,13 +70,6 @@ list2df <- function(df){
     return()
 }
 
-# 缺失值填补函数 df列数=v的长度
-na_insert <- function(df,v){
-  for(n in 1:length(v)){
-    df[is.na(df[,n]),n] <- as.numeric(v[n])
-  }
-  return(df)
-}
 
 
 
